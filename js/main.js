@@ -1,12 +1,16 @@
 import { sketch } from "@/utils/p5-wrapper";
 import config from "@/utils/config";
-import Test from "@/classes/test";
+import { getRandomNumber } from "@/utils/random";
+import Emitter from "@/classes/emitter";
+// TODO: treated as const - need explosion manager
+import explosions from "@/utils/explosions";
 
 sketch.setup = setup;
 sketch.draw = draw;
 sketch.keyPressed = keyPressed;
 
-let test;
+const EMITTER_COUNT = 30;
+let emitters = [];
 
 function setup() {
 	if (!config.clearScreen) background(0);
@@ -14,14 +18,49 @@ function setup() {
 	pixelDensity(config.pixelDensity);
 	createCanvas(config.width, config.height);
 
-	test = new Test();
+	for (let i = 0; i < EMITTER_COUNT; i++) {
+		emitters.push(new Emitter(getRandomNumber(width), getRandomNumber(height)));
+	}
 }
 
 function draw() {
-	if (config.clearScreen) background(0);
+	if (config.clearScreen) background(30);
 
-	ellipse(100, 100, 20);
-	test.display();
+	blendMode(DODGE);
+
+	for (let i = 0; i < emitters.length; i++) {
+		const currentEmiter = emitters[i];
+		for (let j = i + 1; j < emitters.length; j++) {
+			const nextEmitter = emitters[j];
+
+			if (currentEmiter.exploded || nextEmitter.exploded) continue;
+
+			if (currentEmiter.collides(nextEmitter)) {
+				currentEmiter.explode();
+				nextEmitter.explode();
+			}
+		}
+
+		if (!currentEmiter.exploded) {
+			currentEmiter.emit(1);
+			currentEmiter.wrapEdges();
+		}
+
+		currentEmiter.update();
+		currentEmiter.display();
+	}
+
+	for (let explosion of explosions) {
+		explosion.update();
+		explosion.display();
+	}
+
+	if (emitters.length < EMITTER_COUNT) {
+		emitters.push(new Emitter(getRandomNumber(width), getRandomNumber(height)));
+	}
+
+	emitters = emitters.filter((emitter) => !emitter.dead());
+	explosions = explosions.filter((explosion) => !explosion.dead());
 
 	if (!config.animate) createStill();
 }
