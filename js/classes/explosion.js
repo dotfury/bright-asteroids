@@ -27,7 +27,7 @@ export default class Explosion {
 
 	display() {
 		push();
-		let color = `rgb(${this.color.r}, ${this.color.g}, ${this.color.b})`;
+		const color = `rgb(${this.color.r}, ${this.color.g}, ${this.color.b})`;
 		drawingContext.shadowBlur = 25;
 		drawingContext.shadowColor = color;
 

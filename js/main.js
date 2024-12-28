@@ -1,9 +1,8 @@
 import { sketch } from "@/utils/p5-wrapper";
 import config from "@/utils/config";
 import { getRandomNumber } from "@/utils/random";
+import explosionManager from "@/utils/explosions";
 import Emitter from "@/classes/emitter";
-// TODO: treated as const - need explosion manager
-import explosions from "@/utils/explosions";
 
 sketch.setup = setup;
 sketch.draw = draw;
@@ -18,6 +17,8 @@ function setup() {
 	pixelDensity(config.pixelDensity);
 	createCanvas(config.width, config.height);
 
+	noStroke();
+
 	for (let i = 0; i < EMITTER_COUNT; i++) {
 		emitters.push(new Emitter(getRandomNumber(width), getRandomNumber(height)));
 	}
@@ -25,8 +26,6 @@ function setup() {
 
 function draw() {
 	if (config.clearScreen) background(30);
-
-	blendMode(DODGE);
 
 	for (let i = 0; i < emitters.length; i++) {
 		const currentEmiter = emitters[i];
@@ -50,7 +49,7 @@ function draw() {
 		currentEmiter.display();
 	}
 
-	for (let explosion of explosions) {
+	for (let explosion of explosionManager.explosions) {
 		explosion.update();
 		explosion.display();
 	}
@@ -60,7 +59,7 @@ function draw() {
 	}
 
 	emitters = emitters.filter((emitter) => !emitter.dead());
-	explosions = explosions.filter((explosion) => !explosion.dead());
+	explosionManager.explosions = explosionManager.explosions.filter((explosion) => !explosion.dead());
 
 	if (!config.animate) createStill();
 }

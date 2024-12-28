@@ -1,7 +1,7 @@
 import { getRandomRange } from "@/utils/random";
+import explosionManager from "@/utils/explosions";
 import Particle from "@/classes/particle";
 import Explosion from "@/classes/explosion";
-import explosions from "@/utils/explosions";
 
 const COLORS = [
 	{ r: 57, g: 212, b: 203 },
@@ -66,7 +66,7 @@ export default class Emitter {
 
 	explode() {
 		this.exploded = true;
-		explosions.push(new Explosion(this.position.x, this.position.y, this.color));
+		explosionManager.explosions.push(new Explosion(this.position.x, this.position.y, this.color));
 	}
 
 	dead() {
