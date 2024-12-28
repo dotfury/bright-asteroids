@@ -1,7 +1,11 @@
 {
+  "name": "bright-asteroids",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "build"
+    "build": "vite build"
   },
   "dependencies": {
     "p5": "^1.11.2",
