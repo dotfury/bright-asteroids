@@ -1,3 +1,5 @@
+import { isMobileDevice } from "@/utils/device";
+
 export default {
 	frameRate: 50,
 	duration: 30,
@@ -7,4 +9,5 @@ export default {
 	animate: true,
 	interations: 100,
 	pixelDensity: 1,
+	isMobile: isMobileDevice(),
 };

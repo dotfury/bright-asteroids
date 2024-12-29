@@ -8,14 +8,19 @@ sketch.setup = setup;
 sketch.draw = draw;
 sketch.keyPressed = keyPressed;
 
-const EMITTER_COUNT = 30;
+const EMITTER_COUNT = config.isMobile ? 10 : 30;
 let emitters = [];
 
 function setup() {
 	if (!config.clearScreen) background(0);
 	frameRate(config.frameRate);
 	pixelDensity(config.pixelDensity);
-	createCanvas(config.width, config.height);
+	if (config.isMobile) {
+		const canvasSize = window.innerWidth - 50;
+		createCanvas(canvasSize, canvasSize);
+	} else {
+		createCanvas(config.width, config.height);
+	}
 
 	noStroke();
 
