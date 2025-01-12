@@ -1,3 +1,3 @@
 export default {
-	explosions: [],
+  explosions: [],
 };
