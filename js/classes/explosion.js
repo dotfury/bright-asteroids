@@ -3,7 +3,7 @@ import ExplosionParticle from '@/classes/explosionParticle';
 
 export default class Explosion {
   constructor(x, y, color) {
-    this.count = getRandomRange(60, 90);
+    this.count = getRandomRange(15, 30);
     this.lifeTime = getRandomRange(30, 45);
     this.color = color;
     this.particles = [];

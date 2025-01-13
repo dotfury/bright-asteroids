@@ -9,7 +9,7 @@ sketch.setup = setup;
 sketch.draw = draw;
 sketch.keyPressed = keyPressed;
 
-const EMITTER_COUNT = config.isMobile ? 10 : 60;
+const EMITTER_COUNT = config.isMobile ? 10 : 80;
 let emitters = [];
 
 function setup() {
@@ -36,6 +36,8 @@ function draw() {
   const boundary = new Rectangle(width / 2, height / 2, width, height);
   const quadtree = new QuadTree(boundary, 4);
 
+  strokeWeight(1);
+  stroke(100);
   // put in quadtree
   for (let i = 0; i < emitters.length; i++) {
     const currentEmiter = emitters[i];
@@ -73,6 +75,7 @@ function draw() {
     }
   }
 
+  noStroke();
   for (let explosion of explosionManager.explosions) {
     explosion.update();
     explosion.display();
@@ -87,7 +90,7 @@ function draw() {
     (explosion) => !explosion.dead()
   );
 
-  quadtree.display();
+  // quadtree.display();
 
   if (!config.animate) createStill();
 }

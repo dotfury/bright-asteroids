@@ -10,6 +10,8 @@ const COLORS = [
   { r: 178, g: 117, b: 203 },
 ];
 
+const MAX_PARTICLES = 20;
+
 export default class Emitter {
   constructor(x, y) {
     this.velocity = p5.Vector.random2D();
@@ -24,6 +26,8 @@ export default class Emitter {
   }
 
   emit(count) {
+    if (this.particles.length >= MAX_PARTICLES) return;
+
     for (let i = 0; i < count; i++) {
       this.particles.push(
         new Particle(this.position.x, this.position.y, 1, this.color)
