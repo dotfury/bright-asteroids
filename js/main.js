@@ -17,8 +17,7 @@ function setup() {
   frameRate(config.frameRate);
   pixelDensity(config.pixelDensity);
   if (config.isMobile) {
-    const canvasSize = window.innerWidth - 50;
-    createCanvas(canvasSize, canvasSize);
+    createCanvas(config.width, config.width);
   } else {
     createCanvas(config.width, config.height);
   }
@@ -89,8 +88,6 @@ function draw() {
   explosionManager.explosions = explosionManager.explosions.filter(
     (explosion) => !explosion.dead()
   );
-
-  // quadtree.display();
 
   if (!config.animate) createStill();
 }

@@ -1,7 +1,9 @@
 import p5 from 'p5/lib/p5';
 
+import config from '@/utils/config';
 import { getRandomRange } from '@/utils/random';
 
+const PARTICLE_SIZE = config.isMobile ? 10 : 30;
 export default class Particle {
   constructor(x, y, mass = 1, color) {
     this.position = createVector(x, y);
@@ -9,7 +11,7 @@ export default class Particle {
     this.velocity.mult(getRandomRange(1, 2));
     this.acceleration = createVector();
     this.mass = mass;
-    this.radius = 30;
+    this.radius = PARTICLE_SIZE;
     this.lifeTime = getRandomRange(20, 35);
     this.color = color;
   }
@@ -34,7 +36,7 @@ export default class Particle {
   }
 
   getSize() {
-    return map(this.lifeTime, 0, 35, 1, 30);
+    return map(this.lifeTime, 0, 35, 1, PARTICLE_SIZE);
   }
 
   display() {

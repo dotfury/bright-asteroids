@@ -1,5 +1,6 @@
 import p5 from 'p5/lib/p5';
 
+import config from '@/utils/config';
 import { getRandomRange } from '@/utils/random';
 
 export default class ExplosionParticle {
@@ -9,7 +10,9 @@ export default class ExplosionParticle {
     this.velocity.mult(getRandomRange(3, 9));
     this.color = color;
     this.dampening = 0.99;
-    this.size = getRandomRange(12, 20);
+    this.size = config.isMobile
+      ? getRandomRange(8, 15)
+      : getRandomRange(12, 20);
     this.particleType = Math.round(getRandomRange(1, 3));
   }
 

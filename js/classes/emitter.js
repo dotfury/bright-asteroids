@@ -1,3 +1,4 @@
+import config from '@/utils/config';
 import { getRandomRange } from '@/utils/random';
 import explosionManager from '@/utils/explosions';
 import Particle from '@/classes/particle';
@@ -22,7 +23,9 @@ export default class Emitter {
     this.force = createVector(0, 0);
     this.color = random(COLORS);
     this.exploded = false;
-    this.radius = getRandomRange(10, 25);
+    this.radius = config.isMobile
+      ? getRandomRange(8, 15)
+      : getRandomRange(10, 25);
   }
 
   emit(count) {
