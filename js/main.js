@@ -2,6 +2,7 @@ import { sketch } from '@/utils/p5-wrapper';
 import config from '@/utils/config';
 import { getRandomNumber } from '@/utils/random';
 import explosionManager from '@/utils/explosions';
+import { emitterBuffer, explosionBuffer } from '@/utils/buffers';
 import Emitter from '@/classes/emitter';
 import QuadTree, { Rectangle, Point } from '@/classes/quadtree';
 
@@ -9,8 +10,11 @@ sketch.setup = setup;
 sketch.draw = draw;
 sketch.keyPressed = keyPressed;
 
-const EMITTER_COUNT = config.isMobile ? 10 : 80;
+const EMITTER_COUNT = config.isMobile ? 15 : 80;
 let emitters = [];
+
+// TODO: recycle exsplosion particles!!
+window.explosionParticleCount = 0;
 
 function setup() {
   if (!config.clearScreen) background(0);
@@ -35,8 +39,6 @@ function draw() {
   const boundary = new Rectangle(width / 2, height / 2, width, height);
   const quadtree = new QuadTree(boundary, 4);
 
-  strokeWeight(1);
-  stroke(100);
   // put in quadtree
   for (let i = 0; i < emitters.length; i++) {
     const currentEmiter = emitters[i];
@@ -74,20 +76,51 @@ function draw() {
     }
   }
 
-  noStroke();
   for (let explosion of explosionManager.explosions) {
     explosion.update();
     explosion.display();
   }
 
-  if (emitters.length < EMITTER_COUNT) {
-    emitters.push(new Emitter(getRandomNumber(width), getRandomNumber(height)));
+  // reuse emitters
+  let aliveEmitters = [];
+  let deadEmitters = [];
+  for (let i = 0; i < emitters.length; i++) {
+    const currentEmitter = emitters[i];
+    if (currentEmitter.dead()) {
+      deadEmitters.push(currentEmitter);
+    } else {
+      aliveEmitters.push(currentEmitter);
+    }
   }
 
-  emitters = emitters.filter((emitter) => !emitter.dead());
-  explosionManager.explosions = explosionManager.explosions.filter(
-    (explosion) => !explosion.dead()
-  );
+  emitterBuffer.emitters = deadEmitters;
+  emitters = aliveEmitters;
+
+  const emitterLength = aliveEmitters.length + deadEmitters.length;
+
+  if (emitterLength < EMITTER_COUNT) {
+    emitters.push(new Emitter(getRandomNumber(width), getRandomNumber(height)));
+  } else if (emitterBuffer.emitters.length > 0) {
+    const resetEmitter = emitterBuffer.emitters.shift();
+    resetEmitter.reset(getRandomNumber(width), getRandomNumber(height));
+
+    emitters.push(resetEmitter);
+  }
+
+  // reuse explosions
+  let aliveExplosions = [];
+  let deadExplosions = [];
+  for (let i = 0; i < explosionManager.explosions.length; i++) {
+    const currentExplosion = explosionManager.explosions[i];
+    if (currentExplosion.dead()) {
+      deadExplosions.push(currentExplosion);
+    } else {
+      aliveExplosions.push(currentExplosion);
+    }
+  }
+
+  explosionManager.explosions = aliveExplosions;
+  explosionBuffer.explosions = deadExplosions;
 
   if (!config.animate) createStill();
 }

@@ -13,6 +13,16 @@ export default class Explosion {
     }
   }
 
+  reset(x, y, color) {
+    this.color = color;
+    this.particles = [];
+    this.lifeTime = getRandomRange(30, 45);
+
+    for (let i = 0; i < this.count; i++) {
+      this.particles.push(new ExplosionParticle(x, y, color));
+    }
+  }
+
   dead() {
     return this.lifeTime <= 0;
   }
