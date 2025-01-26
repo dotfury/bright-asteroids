@@ -2,6 +2,7 @@ import p5 from 'p5/lib/p5';
 
 import config from '@/utils/config';
 import { getRandomRange } from '@/utils/random';
+import { explosionParticleBuffer } from '@/utils/buffers';
 
 export default class ExplosionParticle {
   constructor(x, y, color) {
@@ -16,11 +17,24 @@ export default class ExplosionParticle {
     this.particleType = Math.round(getRandomRange(1, 3));
   }
 
+  reset(x, y, color) {
+    this.position.x = x;
+    this.position.y = y;
+    this.color = color;
+    this.size = config.isMobile
+      ? getRandomRange(8, 15)
+      : getRandomRange(12, 20);
+  }
+
   update() {
     this.position.add(this.velocity);
 
     this.velocity.mult(this.dampening);
     this.size -= 0.5;
+
+    // if (this.size <= 0) {
+    //   explosionParticleBuffer.particles.push(this);
+    // }
   }
 
   display() {

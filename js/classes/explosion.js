@@ -1,5 +1,6 @@
 import { getRandomRange } from '@/utils/random';
 import ExplosionParticle from '@/classes/explosionParticle';
+import { explosionParticleBuffer } from '@/utils/buffers';
 
 export default class Explosion {
   constructor(x, y, color) {
@@ -8,8 +9,21 @@ export default class Explosion {
     this.color = color;
     this.particles = [];
 
+    this.setupExplosionParticles(x, y, color);
+  }
+
+  setupExplosionParticles(x, y, color) {
     for (let i = 0; i < this.count; i++) {
-      this.particles.push(new ExplosionParticle(x, y, color));
+      let explosionP;
+
+      if (explosionParticleBuffer.particles.length > 0) {
+        explosionP = explosionParticleBuffer.particles.pop();
+        explosionP.reset(x, y, color);
+      } else {
+        explosionP = new ExplosionParticle(x, y, color);
+      }
+
+      this.particles.push(explosionP);
     }
   }
 
@@ -18,9 +32,7 @@ export default class Explosion {
     this.particles = [];
     this.lifeTime = getRandomRange(30, 45);
 
-    for (let i = 0; i < this.count; i++) {
-      this.particles.push(new ExplosionParticle(x, y, color));
-    }
+    this.setupExplosionParticles(x, y, color);
   }
 
   dead() {

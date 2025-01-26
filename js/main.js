@@ -76,6 +76,8 @@ function draw() {
     }
   }
 
+  // TODO: need explosion particle manager - because explosion particles can live
+  // after explosion and still need to update render
   for (let explosion of explosionManager.explosions) {
     explosion.update();
     explosion.display();
@@ -101,7 +103,7 @@ function draw() {
   if (emitterLength < EMITTER_COUNT) {
     emitters.push(new Emitter(getRandomNumber(width), getRandomNumber(height)));
   } else if (emitterBuffer.emitters.length > 0) {
-    const resetEmitter = emitterBuffer.emitters.shift();
+    const resetEmitter = emitterBuffer.emitters.pop();
     resetEmitter.reset(getRandomNumber(width), getRandomNumber(height));
 
     emitters.push(resetEmitter);

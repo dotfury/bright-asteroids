@@ -43,7 +43,7 @@ export default class Emitter {
     for (let i = 0; i < count; i++) {
       let newParticle;
       if (particleBuffer.particles.length > 0) {
-        newParticle = particleBuffer.particles.shift();
+        newParticle = particleBuffer.particles.pop();
         newParticle.reset(this.position.x, this.position.y, this.color);
       } else {
         newParticle = new Particle(
@@ -98,7 +98,7 @@ export default class Emitter {
 
     let newExplosion;
     if (explosionBuffer.explosions.length > 0) {
-      newExplosion = explosionBuffer.explosions.shift();
+      newExplosion = explosionBuffer.explosions.pop();
       newExplosion.reset(this.position.x, this.position.y, this.color);
     } else {
       newExplosion = new Explosion(
