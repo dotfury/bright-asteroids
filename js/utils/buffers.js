@@ -11,5 +11,5 @@ export const particleBuffer = {
 };
 
 export const explosionParticleBuffer = {
-  particles: [],
+  explosionParticles: [],
 };

@@ -2,7 +2,6 @@ import p5 from 'p5/lib/p5';
 
 import config from '@/utils/config';
 import { getRandomRange } from '@/utils/random';
-import { explosionParticleBuffer } from '@/utils/buffers';
 
 export default class ExplosionParticle {
   constructor(x, y, color) {
@@ -31,32 +30,41 @@ export default class ExplosionParticle {
 
     this.velocity.mult(this.dampening);
     this.size -= 0.5;
+  }
 
-    // if (this.size <= 0) {
-    //   explosionParticleBuffer.particles.push(this);
-    // }
+  dead() {
+    return this.size <= 0;
   }
 
   display() {
+    push();
+    const red = this.color.r;
+    const green = this.color.g;
+    const blue = this.color.b;
+    const color = `rgb(${red}, ${green}, ${blue})`;
+    drawingContext.shadowBlur = 25;
+    drawingContext.shadowColor = color;
+
     const size = Math.round(this.size);
 
     if (size >= 1) {
-      fill(`rgb(${this.color.r}, ${this.color.g}, ${this.color.b})`);
+      fill(`rgb(${red}, ${green}, ${blue})`);
       noStroke();
       if (this.particleType == 1) {
-        rect(this.position.x, this.position.y, Math.round(this.size));
+        rect(this.position.x, this.position.y, size);
       } else if (this.particleType == 2) {
-        ellipse(this.position.x, this.position.y, Math.round(this.size));
+        ellipse(this.position.x, this.position.y, size);
       } else {
-        stroke(`rgb(${this.color.r}, ${this.color.g}, ${this.color.b})`);
+        stroke(`rgb(${red}, ${green}, ${blue})`);
         noFill();
         line(
           this.position.x,
           this.position.y,
-          this.position.x + getRandomRange(-this.size, this.size),
-          this.position.y + getRandomRange(-this.size, this.size)
+          this.position.x + getRandomRange(-size, size),
+          this.position.y + getRandomRange(-size, size)
         );
       }
     }
+    pop();
   }
 }

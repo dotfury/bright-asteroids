@@ -1,7 +1,7 @@
 import config from '@/utils/config';
 import { getRandomRange } from '@/utils/random';
 import { explosionBuffer, particleBuffer } from '@/utils/buffers';
-import explosionManager from '@/utils/explosions';
+import { explosionManager } from '@/utils/explosions';
 import Particle from '@/classes/particle';
 import Explosion from '@/classes/explosion';
 

@@ -1,8 +1,12 @@
 import { sketch } from '@/utils/p5-wrapper';
 import config from '@/utils/config';
 import { getRandomNumber } from '@/utils/random';
-import explosionManager from '@/utils/explosions';
-import { emitterBuffer, explosionBuffer } from '@/utils/buffers';
+import { explosionManager, explosionParticleManager } from '@/utils/explosions';
+import {
+  emitterBuffer,
+  explosionBuffer,
+  explosionParticleBuffer,
+} from '@/utils/buffers';
 import Emitter from '@/classes/emitter';
 import QuadTree, { Rectangle, Point } from '@/classes/quadtree';
 
@@ -10,11 +14,8 @@ sketch.setup = setup;
 sketch.draw = draw;
 sketch.keyPressed = keyPressed;
 
-const EMITTER_COUNT = config.isMobile ? 15 : 80;
+const EMITTER_COUNT = config.isMobile ? 15 : 90;
 let emitters = [];
-
-// TODO: recycle exsplosion particles!!
-window.explosionParticleCount = 0;
 
 function setup() {
   if (!config.clearScreen) background(0);
@@ -76,11 +77,13 @@ function draw() {
     }
   }
 
-  // TODO: need explosion particle manager - because explosion particles can live
-  // after explosion and still need to update render
   for (let explosion of explosionManager.explosions) {
     explosion.update();
-    explosion.display();
+  }
+
+  for (let explosionParticle of explosionParticleManager.explosionParticles) {
+    explosionParticle.update();
+    explosionParticle.display();
   }
 
   // reuse emitters
@@ -123,6 +126,22 @@ function draw() {
 
   explosionManager.explosions = aliveExplosions;
   explosionBuffer.explosions = deadExplosions;
+
+  // reuse explosion particles
+  let aliveExplosionParticles = [];
+  let deadExplosionParticles = [];
+  for (let i = 0; i < explosionParticleManager.explosionParticles.length; i++) {
+    const currentExplosionParticle =
+      explosionParticleManager.explosionParticles[i];
+    if (currentExplosionParticle.dead()) {
+      deadExplosionParticles.push(currentExplosionParticle);
+    } else {
+      aliveExplosionParticles.push(currentExplosionParticle);
+    }
+  }
+
+  explosionParticleManager.explosionParticles = aliveExplosionParticles;
+  explosionParticleBuffer.explosionParticles = deadExplosionParticles;
 
   if (!config.animate) createStill();
 }
