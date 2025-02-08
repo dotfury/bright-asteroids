@@ -14,7 +14,7 @@ sketch.setup = setup;
 sketch.draw = draw;
 sketch.keyPressed = keyPressed;
 
-const EMITTER_COUNT = config.isMobile ? 20 : 90;
+const EMITTER_COUNT = config.isMobile ? 20 : 80;
 let emitters = [];
 
 function setup() {
